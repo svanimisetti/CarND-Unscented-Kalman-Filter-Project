@@ -24,9 +24,15 @@ UKF::UKF() {
   P_ = MatrixXd(5, 5);
 
   // Process noise standard deviation longitudinal acceleration in m/s^2
+  // Value for std_a_ was set as 3*stddev(a), where a is the acceleration
+  // magnitude derived from ground thruth velocities. Detailed statistics
+  // are presented in obj_pose-laser-radar-synthetic-input-analysis.xlsx
   std_a_ = 1.0;
 
   // Process noise standard deviation yaw acceleration in rad/s^2
+  // Value for std_yawdd_ was set as 3*stddev(a_yaw), where a_yaw is the
+  // yaw acceleration magnitude from ground thruth yaw rate. Statistics
+  // are presented in obj_pose-laser-radar-synthetic-input-analysis.xlsx
   std_yawdd_ = 0.5;
 
   // Laser measurement noise standard deviation position1 in m
@@ -95,6 +101,8 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
     }
 
     P_ = MatrixXd(n_x_, n_x_);
+    // Initial values for v, yaw, and yawd are found by doing
+    // statistical analysis of ground thruth data
     P_ << 1.0, 0.0, 0.0, 0.0, 0.0,
 			    0.0, 1.0, 0.0, 0.0, 0.0,
 			    0.0, 0.0, 1.5, 0.0, 0.0,
